@@ -1,0 +1,190 @@
+{% extends "app/base.html" %}
+{% load filters %}
+{% load staticfiles %}
+{% load tags %}
+{% load bootstrap3 %}
+
+{% block indexactive %}active{% endblock indexactive %}
+
+{% block content %}
+
+    <script src="{% static "app/js/index.js" %}"></script>
+    {% if float_msg %}
+        <div class="alert alert-success alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+           {{ float_msg }}
+        </div>
+    {%  endif %}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-2">
+                <div class="panel panel-default fixed-side-panel" id="paper-panel">
+                    <div class="panel-heading">Papers</div>
+                    <div class="panel-body scrollable">
+                        {% if num_papers > 0 %}
+                            <div data-toggle="tooltip" title="Click to download papers">
+                                <a href=" {% url 'app:write_data' %}"> Papers: {{ num_papers }} </a> <br />
+                            </div>
+                        {% else %}
+                            Papers: {{ num_papers }} <br />
+                        {% endif %}
+                        {% if review_string != "Reviewer biddings: 0" %}
+                            <div data-toggle="tooltip" title="Click to download reviewer bidding data">
+                                <a href=" {% url 'app:write_assignments_data' %}"> {{ review_string }} </a>
+                            </div>
+                        {% else %}
+                            {{ review_string }}
+                        {% endif %}
+                        <br />
+                        <ul class="list-group">
+                            {% for i in num_papers|custom_range %}
+                                <li class="list-group-item cluster{{ paper_clusters|get_element_at:i }}">
+                                    <a href="/app/papers/view/?id={{ paper_ids|get_element_at:i }}" name="paper">
+                                        {{ paper_titles|get_element_at:i }}
+                                        ({{ paper_lengths|get_element_at:i }}min)
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <a href="/app/papers/view/" class="btn btn-primary">Add paper</a>
+                        <br/><br/>
+                        <form method="post" action="{% url 'app:import_data' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% bootstrap_form papers_form %}
+                            {% buttons %}
+                                <button type="submit" class="btn btn-primary">
+                                   Import papers
+                                </button>
+                                <a href="{% url 'app:import_demo_data' %}" class="btn btn-default">
+                                    Import demo papers
+                                </a>
+                            {% endbuttons %}
+                        </form>
+                        <br/>
+                        <form method="post" action="{% url 'app:import_assignments_data' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% bootstrap_form assignments_form %}
+                            {% buttons %}
+                                <button type="submit" class="btn btn-primary">
+                                   Import reviewer bidding
+                                </button>
+                                <a href="{% url 'app:import_demo_assignments_data' %}" class="btn btn-default">
+                                    Import demo reviewer bidding
+                                </a>
+                            {% endbuttons %}
+                        </form>
+                        <br/><br/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="panel panel-default" id="maindiv">
+                    <div class="panel-heading">
+                        <b>{{ conference_title }}</b> <br />
+                        Program (
+                        {% for i in num_days|custom_range %}
+                            {% if  i != day %}
+                                <a href="/app/index/?day={{ i }}">Day {{ i|add:1 }}</a>
+                            {% else %}
+                                Day {{ i|add:1 }}
+                            {% endif %}
+                            {% if i|add:1 < num_days %}
+                                |
+                            {% endif %}
+                        {% endfor %}
+                        )
+                    </div>
+                    <div class="panel-body" id="schedule_div">
+                        <div class="table">
+                            {% for row in settings_list %}
+                                <div class="panel panel-default">
+                                    {% for col in row %}
+                                        {% if forloop.counter0|mod:3 == 0%}
+                                            <div class="row">
+                                        {% endif %}
+                                        <div class="col-md-{{ row|allign_schedule }}">
+                                            <div class="well" name="slot">
+                                                <div class="row">
+                                                    <div class="col-xs-5">
+                                                        Slot {{ forloop.parentloop.counter }}<br/>
+                                                        Length: {{ col|get_element_at:0 }}min <br/>
+                                                        Free time: {{ col|get_element_at:1 }}min <br/>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <form class="form-inline" method="post" action="{% url 'app:move_slot_up' %}">
+                                                            {% csrf_token %}
+                                                            <input hidden id="slot" name="slot" value="{{ forloop.parentloop.counter }}">
+                                                            <input hidden id="day" name="day" value="{{ day }}">
+                                                            <button class="btn btn-default">Move slot up</button>
+                                                        </form>
+                                                        <form class="form-inline" method="post" action="{% url 'app:move_slot_down' %}">
+                                                            {% csrf_token %}
+                                                            <input hidden id="slot" name="slot" value="{{ forloop.parentloop.counter }}">
+                                                            <input hidden id="day" name="day" value="{{ day }}">
+                                                            <button class="btn btn-default">Move slot down</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                                <!-- Display all the papers in the slot -->
+                                                {% get_paper schedule day forloop.parentloop.counter0 forloop.counter0 as papers %}
+                                                {% for paper in papers %}
+                                                    <div class="well">
+                                                        <div class="row">
+                                                            <a href="/app/papers/view/?id={{ paper }}" name="paper">
+                                                            <div class="col-xs-8">
+                                                                {{ paper_dict|get_element_at:paper }}
+                                                            </div>
+                                                                </a>
+                                                            <div class="col-xs-4">
+                                                                {% if paper_locked|get_element_at:paper %}
+                                                                    <p class="text-right">
+                                                                        <input type="submit" class="btn btn-sm btn-danger"
+                                                                               value="Unlock paper" name="lock-button"
+                                                                                id="{{ paper }}"/>
+                                                                    </p>
+
+                                                                {% else %}
+                                                                    <p class="text-right">
+                                                                        <input type="submit" class="btn btn-sm btn-primary"
+                                                                               value="Lock paper" name="lock-button"
+                                                                                id="{{ paper }}"/>
+                                                                    </p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+
+                                                <!-- Display a Drop-papers-here note -->
+                                                <div class="well-dashed">
+                                                    Manually add or remove papers to/from the slots by dragging them
+                                                </div>
+
+                                                <input class="hidden" , value="{{ forloop.counter0 }}" id="col" ,
+                                                       name="col"/>
+                                                <input class="hidden" , value="{{ forloop.parentloop.counter0 }}"
+                                                       id="row" , name="row"/>
+                                                {% with num_lines=col|get_element_at:0|div:50 %}
+                                                    {% for b in num_lines|custom_range %}
+                                                        <br/>
+                                                    {% endfor %}
+                                                {% endwith %}
+                                            </div>
+                                        </div>
+                                        {% if forloop.counter0|mod:3 == 2%}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {# </div> #}
+                                </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+{% endblock content %}

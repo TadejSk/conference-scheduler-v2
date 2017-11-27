@@ -1,0 +1,56 @@
+{% load filters %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" type="text/css" href="{% static "app/export/export.css"%}"/>
+<head>
+    <meta charset="UTF-8">
+    <title>Diploma</title>
+</head>
+<body>
+{% for day in schedule %}
+    <table class="export" cellspacing="0" cellpadding="0">
+        <thead>Day {{ forloop.counter }}</thead>
+        <tbody>
+            {% for rowd in day %}
+                {% for row in rowd|row_to_table %}
+                <tr class="row">
+                    <th></th>
+                        <td class="slot">
+                            {{ times|get_element_at:forloop.parentloop.parentloop.counter0|get_element_at:forloop.parentloop.counter0|get_element_at:forloop.counter0 }}
+                        </td>
+                    {% for col in row %}
+                        {% if col > 0 %}
+                            <td class="slot" rowspan="{{col}}">{{ names|get_element_at:forloop.parentloop.parentloop.parentloop.counter0|get_element_at:forloop.parentloop.parentloop.counter0|get_element_at:forloop.counter0 }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+<br/>
+<br/>
+{# Paper table #}
+{% for day in paper_names %}
+    {% for row in day %}
+        {% for col in row %}
+            <table class="export" cellspacing="0" cellpadding="0">
+                <thead>{{ paper_slots|get_element_at:forloop.parentloop.parentloop.counter0|get_element_at:forloop.parentloop.counter0|get_element_at:forloop.counter0}}</thead>
+                {% for element in col %}
+                    <tr>
+                        <td class="slot">
+                            {{ paper_names|get_element_at:forloop.parentloop.parentloop.parentloop.counter0|get_element_at:forloop.parentloop.parentloop.counter0|get_element_at:forloop.parentloop.counter0|get_element_at:forloop.counter0 }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <br/>
+        {% endfor %}
+    {% endfor %}
+{% endfor %}
+</body>
+</html>

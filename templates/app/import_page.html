@@ -1,0 +1,76 @@
+{% extends "app/base.html" %}
+{% load filters %}
+{% block importactive %}active{% endblock importactive %}
+
+{% block content %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static "app/js/clustering_settings.js" %}"></script>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Automatic scheduling settings
+                    </div>
+                    <div class="panel-body">
+                        <div class="container">
+                            <div class="row-fluid">
+                                <div class="col-lg-7">
+                                    Paper title
+                                </div>
+                                <div class="col-lg-2">
+                                    Pos tagged
+                                </div>
+                                <div class="col-lg-2">
+                                    Number of terms
+                                </div>
+                                <div class="col-lg-1">
+                                    Cluster
+                                </div>
+                            </div>
+                            <hr>
+                            {% for i in num_elements|custom_range %}
+                               <!-- <li class="list-group-item">-->
+                                    <div class="row-fluid">
+                                        <div class="col-lg-7">
+                                            {{ paper_titles|get_element_at:i }}
+                                        </div>
+                                        <div class="col-lg-2">
+                                            {{ paper_pos_tagged|get_element_at:i }}
+                                        </div>
+                                        <div class="col-lg-2">
+                                            {{ paper_term_count|get_element_at:i }}
+                                        </div>
+                                        <div class="col-lg-1">
+                                            {{ paper_clusters|get_element_at:i }}
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <hr>
+                               <!-- </li>-->
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                    <a href="{% url 'app:import_page_load_raw_data' %}" class="btn btn-default">
+                       Import papers
+                    </a>
+                    <a href="{% url 'app:import_page_pos_tag_data' %}" class="btn btn-default">
+                       POS tag papers
+                    </a>
+                    <a href="{% url 'app:import_page_find_terms' %}" class="btn btn-default">
+                       Find terms
+                    </a>
+                    <a href="{% url 'app:import_page_create_reference_graph' %}" class="btn btn-default">
+                       Create reference graph
+                    </a>
+                    <a href="{% url 'app:import_page_run_clustering' %}" class="btn btn-default">
+                       Run clustering
+                    </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

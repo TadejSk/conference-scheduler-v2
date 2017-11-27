@@ -1,0 +1,25 @@
+{% extends "app/base.html" %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% block content %}
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Edit paper
+                </div>
+                <div class="panel-body">
+                    <form method="post" action="{% url 'app:update_paper' %}">
+                        {% csrf_token %}
+                        {% bootstrap_formset formset %}
+                        {% buttons %}
+                            <button type="submit" class="btn btn-primary">
+                               Save
+                            </button>
+                        {% endbuttons %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

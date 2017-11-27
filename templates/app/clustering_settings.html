@@ -1,0 +1,114 @@
+{% extends "app/base.html" %}
+{% load filters %}
+{% block autosactive %}active{% endblock autosactive %}
+
+{% block content %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static "app/js/clustering_settings.js" %}"></script>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Automatic scheduling settings
+                    </div>
+                    <form method="post" action="{% url 'app:basic_clustering' %}">
+                        {% csrf_token %}
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-9">
+                                    <label for="method">Clustering function</label>
+                                    <select id="method" name="method" class="form-control"
+                                           placeholder="">
+                                        <option value="aff">Affinity propagation</option>
+                                        {# <option value="dbs">DBSCAN</option>  #}
+                                        <option value="hie">Hierarchical clustering</option>
+                                        <option value="kme">K-Means</option>
+                                        <option value="msh">Mean-shift</option>
+                                        <option value="kmm">Mini batch K-Means</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Function parameters
+                                </div>
+                                <div class="panel-body">
+                                    <div id="aff" name="params" class="row">
+                                        <!--
+                                        <div class="col-xs-3">
+                                            <label for="num_clusters">Maximum number of iterations</label>
+                                            <input type="text" id="num_clusters" name="num_clusters" class="form-control"
+                                                   placeholder="Number of clusters" />
+                                        </div>
+                                        -->
+                                    </div>
+                                    <div id="ncl" name="params" class="row">
+                                        <div class="col-xs-3">
+                                            <label for="num_clusters">Number of clusters</label>
+                                            <input type="text" id="num_clusters" name="num_clusters" class="form-control"
+                                                   placeholder="Number of clusters" />
+                                        </div>
+                                    </div>
+                                    <div id="msh" name="params" class="row">
+                                        <div class="col-xs-3">
+                                            <label for="num_clusters">Cluster sizes (1 to 100)</label>
+                                            <input type="text" id="band" name="band" class="form-control"
+                                                   placeholder="25" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Select which data should be used for clustering</div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="input-group">
+                                                <input value="1" id="usetitles" name="usetitles" type="checkbox" class="form-inline"/>
+                                                <label for="usetitles"> Use Titles</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="input-group">
+                                                <input id="useabstracts" name="useabstracts" type="checkbox" class="form-inline"/>
+                                                <label for="useabstracts"> Use Abstracts</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="input-group">
+                                                <input id="assign" name="assign" type="checkbox" class="form-inline"
+                                                        {% if has_assignment_data == False %}
+                                                            disabled
+                                                        {% endif %}
+                                                />
+                                                <label for="assign"> Use Assignment data</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <label for="keywords">Use only the following words for computing clusters</label>
+                                    <input type="text" id="keywords" name="keywords" class="form-control"
+                                           placeholder="word1 word2 word3" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <button type="submit" class="btn btn-primary">Start automatic scheduling</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

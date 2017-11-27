@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<script src="{% static "app/bootstrap/js/jQuery.js" %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static "app/bootstrap/css/bootstrap.min.css"%}"/>
+<link rel="stylesheet" type="text/css" href="{% static "app/bootstrap/css/style.css"%}"/>
+<link rel="stylesheet" type="text/css" href="{% static "app/nvd3/nv.d3.css" %}"/>
+<script type="text/javascript" src="{% static "app/bootstrap/js/bootstrap.min.js" %}"></script>
+<script type="text/javascript" src="{% static "app/d3/d3.min.js" %}"></script>
+<script type="text/javascript" src="{% static "app/nvd3/nv.d3.min.js" %}"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>RoboChair scheduling assistant</title>
+</head>
+<body>
+<div class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/app/index/">Scheduling assistant</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="{% block importactive %}{% endblock importactive %}">
+                <a href="{%  url 'app:import_page' %}">Import Data</a>
+            </li>
+            <li class="{% block schedactive %}{% endblock schedactive %}">
+                <a href="/app/settings/schedule">Schedule</a>
+            </li>
+            <li class="{% block indexactive %}{% endblock indexactive %}">
+                <a href = "/app/index/">Manual program</a>
+            </li>
+            <li class="{% block autosactive %}{% endblock autosactive %}">
+                <a href="{% url 'app:clustering_settings' %}" >Automatic scheduling</a>
+            </li>
+            <li class="{% block clustactive %}{% endblock clustactive %}">
+                <a href="{% url 'app:clustering_results_all' %}" >Clustering results</a>
+            </li>
+            <li class="{% block exporactive %}{% endblock exporactive %}">
+                <a href="{% url 'app:export_schedule' %}" >Export schedule</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="{% block conflactive %}{% endblock conflactive %}">
+                <a href="/app/conference/list">Conference list</a>
+            </li>
+
+            <li>
+                {% if user.is_authenticated %}
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <span class="glyphicon glyphicon-user"></span>{{ user }}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                          <li><a href="/app/logout_view">Logout</a></li>
+                        </ul>
+                    </li>
+
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</div>
+{% block content %}
+
+{% endblock content %}
+</body>
+</html>

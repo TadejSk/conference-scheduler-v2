@@ -1,0 +1,76 @@
+{% extends "app/base.html" %}
+
+{% block clustactive %}active{% endblock clustactive %}
+
+{% block content %}
+    {% load filters %}
+    {% load staticfiles %}
+    {% load tags %}
+
+    <script type="text/javascript" src="{% static "app/js/cluserting_results.js" %}"></script>
+    <div class="hidden" id="coordsx">
+        {% for i in num_papers|custom_range %}
+            <input type="hidden", id="x{{ paper_ids|get_element_at:i }}", value="{{ paper_coords_x|get_element_at:i }}"/>
+        {% endfor %}
+    </div>
+    <div class="hidden" id="coordsy">
+        {% for i in num_papers|custom_range %}
+            <input type="hidden", id="y{{ paper_ids|get_element_at:i }}", value="{{ paper_coords_y|get_element_at:i }}"/>
+        {% endfor %}
+    </div>
+    <div class="hidden" id="clusters">
+        {% for i in num_papers|custom_range %}
+            <input type="hidden", id="c{{ paper_ids|get_element_at:i }}", value="{{ paper_clusters|get_element_at:i }}"/>
+        {% endfor %}
+    </div>
+    <div class="hidden" id="titles">
+        {% for i in num_papers|custom_range %}
+            <input type="hidden", id="x{{ paper_ids|get_element_at:i }}", value="{{ paper_titles|get_element_at:i }}"/>
+        {% endfor %}
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-2">
+                <div class="panel panel-default fixed-side-panel" id="paper-panel">
+                    <div class="panel-heading">Papers</div>
+                    <div class="panel-body scrollable">
+                        <ul class="list-group">
+                            {% for i in num_papers|custom_range %}
+                                <a href="/app/papers/view/?id={{ paper_ids|get_element_at:i }}" name="paper">
+                                    <li class="list-group-item cluster{{ paper_clusters|get_element_at:i }}">
+                                        {{ paper_titles|get_element_at:i }}
+                                    </li>
+                                </a>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="panel panel-default" id="maindiv">
+                    <div class="panel-heading">
+                        Clustering results (
+                        {%  if all == True %}
+                        <a href="{% url 'app:clustering_results_assigned' %}">
+                            Show only papers that were newly assigned to the schedule
+                        </a>
+                        {% else %}
+                        <a href="{% url 'app:clustering_results_all' %}">
+                            Show all papers
+                        </a>
+                        {% endif %}
+                    )
+                    </div>
+                    <div class="panel-body" id="schedule_div">
+                        {% if num_papers == 0 %}
+                            <p>There are currently no clustering results.</p>
+                            <p>Clustering results will be displayed after running automatic scheduling</p>
+                        {% else %}
+                            <svg style='height:595px'/>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

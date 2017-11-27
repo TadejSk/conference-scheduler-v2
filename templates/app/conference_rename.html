@@ -1,0 +1,29 @@
+{% extends "app/base.html" %}
+{% load filters %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Rename conference
+                    </div>
+                    <form method="post" action="{% url 'app:rename_conference_action' %} ">
+                        {% csrf_token %}
+                        <div class="panel-body">
+                            <input hidden value="{{ id }}" id="conference" name="conference"/>
+                            <label for="oldname">Old name</label>
+                            <input disabled class="form-control" id="oldname", name="oldname" value="{{ old_name }}">
+
+                            <label for="newname">New name</label>
+                            <input class="form-control" id="newname", name="newname">
+                        </div>
+                        <div class="panel-footer">
+                            <button type="submit" class="btn btn-primary">Rename conference</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

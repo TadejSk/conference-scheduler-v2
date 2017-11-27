@@ -1,0 +1,27 @@
+{% extends "app/base.html" %}
+{% block content %}
+    {% load filters %}
+    {% load staticfiles %}
+    {% load tags %}
+    {% load bootstrap3 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <div class="container-fluid">
+        <div class="panel panel-default" id="maindiv">
+                <div class="panel-heading">
+                    Automatic clustering results
+                </div>
+                <div class="panel-body" id="schedule_div">
+                    The following papers were added to the schedule: <br /> <br />
+                    <ul class="list-group">
+                        {%  for paper in newly_added_paper_names %}
+                            <li class="list-group-item">{{ paper }} </li>
+                        {% endfor %}
+                    </ul>
+                <a href="{% url 'app:clustering_results_all' %}" class="btn btn-primary">View visualization</a>
+                <a href="{% url 'app:index' %}" class="btn btn-primary">Manual program</a>
+                </div>
+        </div>
+
+    </div>
+{% endblock content %}

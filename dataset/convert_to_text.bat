@@ -1,0 +1,1 @@
+for /r %%v in (*.pdf) do pdftotext "%%v"

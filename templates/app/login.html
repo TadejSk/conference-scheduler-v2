@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static "app/bootstrap/css/bootstrap.min.css"%}"/>
+<script type="text/javascript" src="{% static "app/bootstrap/js/jQuery.js" %}"></script>
+<script type="text/javascript" src="{% static "app/bootstrap/js/bootstrap.min.js" %}"></script>
+<script type="text/javascript" src="{% static "app/js/login.js" %}"></script>
+
+
+<html>
+    <body>
+    <!-- Human check dialog -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Alert</h4>
+                    </div>
+                    <div class="modal-body">
+                        <label id="instrLabel" name="instrLabel">Please answer the following question</label><br />
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="answer" class="col-sm-3 control-label" id="answerLabel" name="answerLabel">What is 4*6</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="answer" id="answer" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="answerBtn" name="answerBtn">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class ="col-md-offset-3 col-md-5">
+        {% if error_message %}<div class="alert alert-danger" role="alert">{{ error_message }}</div>{% endif %}
+        <div class = "panel panel-primary">
+            <div class="panel-heading">Login</div>
+            <div class="panel-body">
+                <form action="{% url 'app:login_action' %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group col-md-10">
+                        <input type="text" class="form-control" name="username" id="username" value="" placeholder="Jonh" /><br/>
+                        <input type="password" name="password" class="form-control" id="password" value="" placeholder="Password" />
+                    </div>
+                    <br/>
+                    <input type="submit" class="btn btn-success" value="Login" />
+                    <a href="{% url 'app:login_register' %}" class="btn btn-default">
+                           Register
+                    </a>
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                           Continue as guest
+                    </button>
+                </form>
+            </div>
+            </div>
+    </div>
+    </body>
+</html>
